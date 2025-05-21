@@ -1,0 +1,37 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.0.31903.59
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "CTS", "CTS", "{682F9AFC-C51A-46CA-90E7-8E09AEE4F3FB}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Backend", "Backend", "{A87DEA3A-98D1-4CC9-B1CB-FFF5430BFE7F}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ContainerTrackingSystem.Core", "CTS\Backend\ContainerTrackingSystem.Core\ContainerTrackingSystem.Core.csproj", "{F36F3284-9B3F-4413-95D3-2F1110DFA816}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ContainerTrackingSystem.Data", "CTS\Backend\ContainerTrackingSystem.Data\ContainerTrackingSystem.Data.csproj", "{40103591-6381-40D2-B610-32BF4C1B7C96}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{F36F3284-9B3F-4413-95D3-2F1110DFA816}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F36F3284-9B3F-4413-95D3-2F1110DFA816}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F36F3284-9B3F-4413-95D3-2F1110DFA816}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F36F3284-9B3F-4413-95D3-2F1110DFA816}.Release|Any CPU.Build.0 = Release|Any CPU
+		{40103591-6381-40D2-B610-32BF4C1B7C96}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{40103591-6381-40D2-B610-32BF4C1B7C96}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{40103591-6381-40D2-B610-32BF4C1B7C96}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{40103591-6381-40D2-B610-32BF4C1B7C96}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{A87DEA3A-98D1-4CC9-B1CB-FFF5430BFE7F} = {682F9AFC-C51A-46CA-90E7-8E09AEE4F3FB}
+		{F36F3284-9B3F-4413-95D3-2F1110DFA816} = {A87DEA3A-98D1-4CC9-B1CB-FFF5430BFE7F}
+		{40103591-6381-40D2-B610-32BF4C1B7C96} = {A87DEA3A-98D1-4CC9-B1CB-FFF5430BFE7F}
+	EndGlobalSection
+EndGlobal
