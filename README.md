@@ -1,4 +1,4 @@
-**CTHub: Container Management System**
+**CTHub: Container Tracking Hub**
 
 **Frontend**
 
