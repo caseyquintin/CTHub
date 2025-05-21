@@ -1,4 +1,16 @@
-**CTHub: Container Tracking Hub**
+# CTHub: Container Tracking Hub
+
+## Project Origins
+
+This repository contains the original CTHub implementation using HTML/Bootstrap/jQuery and ASP.NET Core with ADO.NET.
+
+A modern reimplementation of this system has been created using React/TypeScript frontend and ASP.NET Core with Entity Framework backend:
+
+- **Modern CTS Repository**: [github.com/caseyquintin/CTS](https://github.com/caseyquintin/CTS)
+- **Key Differences**: The modern implementation features React components, TypeScript safety, and code-first Entity Framework for data access while maintaining compatibility with the existing database schema.
+- **Purpose**: The new implementation provides a more maintainable codebase with modern development patterns while preserving all functionality from the original system.
+
+* * * * *
 
 **Frontend**
 
