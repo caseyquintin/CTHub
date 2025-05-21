@@ -1,0 +1,203 @@
+# .NET Core/.NET/.NET Framework
+## Build results
+[Dd]ebug/
+[Dd]ebugPublic/
+[Rr]elease/
+[Rr]eleases/
+x64/
+x86/
+[Ww][Ii][Nn]32/
+[Aa][Rr][Mm]/
+[Aa][Rr][Mm]64/
+bld/
+[Bb]in/
+[Oo]bj/
+[Ll]og/
+[Ll]ogs/
+[Tt]est[Rr]esult*/
+[Bb]uild[Ll]og.*
+
+# Visual Studio files
+.vs/
+.vscode/
+*_i.c
+*_p.c
+*_h.h
+*.ilk
+*.meta
+*.obj
+*.iobj
+*.pch
+*.pdb
+*.ipdb
+*.pgc
+*.pgd
+*.rsp
+*.sbr
+*.tlb
+*.tli
+*.tlh
+*.tmp
+*.tmp_proj
+*_wpftmp.csproj
+*.log
+*.tlog
+*.vspscc
+*.vssscc
+.builds
+*.pidb
+*.svclog
+*.scc
+*.user
+*.userosscache
+*.suo
+*.userprefs
+*.dbmdl
+*.jfm
+*.pfx
+*.snk
+*.publishsettings
+orleans.codegen.cs
+nCrunchTemp_*
+_NCrunch_*/
+
+# .NET Scaffolding
+ScaffoldingReadMe.txt
+
+# Visual Studio generated files
+ServiceFabricBackup/
+*.rptproj.bak
+Generated_Code/
+_Chutzpah*
+ipch/
+[Tt]est[Rr]esult*/
+[Bb]uild[Ll]og.*
+*.VisualState.xml
+TestResult.xml
+nunit-*.xml
+
+# NuGet Packages
+*.nupkg
+*.snupkg
+**/[Pp]ackages/*
+!**/[Pp]ackages/build/
+*.nuget.props
+*.nuget.targets
+
+# SQLite database files
+*.db
+*.db-shm
+*.db-wal
+*.sqlite
+*.sqlite3
+
+# Entity Framework / Database
+*.mdf
+*.ldf
+*.ndf
+Migrations/
+
+# Configuration with sensitive data
+appsettings.json
+appsettings.*.json
+!appsettings.example.json
+!appsettings.Development.json
+*.Development.json
+
+# React/Node.js
+node_modules/
+**/node_modules/
+**/build/
+**/dist/
+**/.pnp
+**/.pnp.js
+**/coverage/
+**/.next/
+**/.nuxt/
+**/.cache/
+**/.output/
+**/.env
+**/.env.local
+**/.env.development
+**/.env.test
+**/.env.production
+**/.env.development.local
+**/.env.test.local
+**/.env.production.local
+**/npm-debug.log*
+**/yarn-debug.log*
+**/yarn-error.log*
+**/package-lock.json
+**/yarn.lock
+
+# Debug logs and temp files
+/DebugLogs/
+**/[Ll]ogs/
+*.log
+logs/
+temp/
+tmp/
+swp/
+
+# IDE/Editor specific
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+.DS_Store
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+$RECYCLE.BIN/
+*.cab
+*.msi
+*.msix
+*.msm
+*.msp
+*.lnk
+
+# Temporary upload files
+.tmp.driveupload/
+*.tmp
+*.temp
+
+# Project-specific configuration that should never be committed
+/Backend/ContainerTrackingSystem.API/appsettings.Production.json
+/Backend/ContainerTrackingSystem.API/Properties/PublishProfiles/
+/Frontend/.env*
+secrets.json
+/CLAUDE.md
+/../CLAUDE.md
+
+# Setup and utility scripts (one-time use)
+/setup_*.sh
+/setup_*.ps1
+/add_ef_packages.ps1
+/create_projects.ps1
+/copy_model_files.ps1
+/dotnet-install.sh
+/run_ef_migration.ps1
+/update_typescript_version.ps1
+
+# Duplicate database scripts
+/create_database_lt_quintin2.sql
+
+# Debug utilities
+/*.bat
+/debug_*.bat
+/fix_*.bat
+/reset_*.bat
+/start_*.bat
+/switch_*.bat
+/simple_*.bat
+/run_*.bat
+/check_*.bat
+
+# Duplicate or backup files
+*.bak
+*2.tsx
+*2.ts
+
+# Solution files (can be regenerated)
+/*.sln

@@ -1,0 +1,431 @@
+{
+  "containers": [
+    {
+      "containerID": 1,
+      "containerNumber": "TEST1234567",
+      "projectNumber": "P10001",
+      "currentStatus": "Not Sailed",
+      "shiplineID": 1,
+      "shipline": {
+        "shiplineID": 1,
+        "shiplineName": "Maersk Line",
+        "link": "https://www.maersk.com/tracking/",
+        "isDynamicLink": true
+      },
+      "containerSize": "40'",
+      "mainSource": "Import",
+      "transload": false,
+      "bolBookingNumber": "BOL123456",
+      "vendorIDNumber": "V1001",
+      "vendor": "Test Vendor",
+      "poNumber": "PO123456",
+      "vesselLineID": 1,
+      "vesselLine": {
+        "vesselLineID": 1,
+        "vesselLineName": "APM-Maersk",
+        "link": "https://www.vesselfinder.com/vessels/",
+        "isDynamicLink": true
+      },
+      "vesselID": 1,
+      "vessel": {
+        "vesselID": 1,
+        "vesselName": "Maersk Seletar",
+        "vesselLineID": 1,
+        "imo": "9784350",
+        "mmsi": "563096400"
+      },
+      "voyage": "VY21054",
+      "portOfDeparture": "Shanghai",
+      "portID": 1,
+      "port": {
+        "portID": 1,
+        "portOfEntry": "Los Angeles"
+      },
+      "portOfEntry": "Los Angeles",
+      "terminalID": 1,
+      "terminal": {
+        "terminalID": 1,
+        "terminalName": "APM Terminals",
+        "portID": 1,
+        "link": "https://www.apmterminals.com/en/los-angeles"
+      },
+      "rail": true,
+      "railDestination": "Chicago",
+      "railwayLine": "BNSF",
+      "railPickupNumber": "RP78901",
+      "carrier": "Carrier Freight",
+      "sail": "2025-05-01T00:00:00",
+      "sailActual": "2025-05-01",
+      "berth": "2025-05-15T00:00:00",
+      "berthActual": "2025-05-15",
+      "arrival": "2025-05-15T00:00:00",
+      "arrivalActual": "2025-05-15",
+      "offload": null,
+      "offloadActual": "",
+      "available": null,
+      "pickupLFD": "2025-05-25T00:00:00",
+      "portRailwayPickup": null,
+      "returnLFD": "2025-06-05T00:00:00",
+      "loadToRail": null,
+      "railDeparture": null,
+      "railETA": null,
+      "delivered": null,
+      "returned": null,
+      "lastUpdated": "2025-05-19T00:00:00",
+      "notes": "Test container for demonstration"
+    },
+    {
+      "containerID": 2,
+      "containerNumber": "ABCD7654321",
+      "projectNumber": "P10002",
+      "currentStatus": "On Vessel",
+      "shiplineID": 2,
+      "shipline": {
+        "shiplineID": 2,
+        "shiplineName": "MSC",
+        "link": "https://www.msc.com/track-a-shipment",
+        "isDynamicLink": true
+      },
+      "containerSize": "20'",
+      "mainSource": "Import",
+      "transload": false,
+      "bolBookingNumber": "BOL987654",
+      "vendorIDNumber": "V1002",
+      "vendor": "Test Vendor 2",
+      "poNumber": "PO987654",
+      "vesselLineID": 2,
+      "vesselLine": {
+        "vesselLineID": 2,
+        "vesselLineName": "MSC",
+        "link": "https://www.vesselfinder.com/vessels/",
+        "isDynamicLink": true
+      },
+      "vesselID": 2,
+      "vessel": {
+        "vesselID": 2,
+        "vesselName": "MSC Seaside",
+        "vesselLineID": 2,
+        "imo": "9745366",
+        "mmsi": "355906000"
+      },
+      "voyage": "VY78905",
+      "portOfDeparture": "Singapore",
+      "portID": 2,
+      "port": {
+        "portID": 2,
+        "portOfEntry": "Long Beach"
+      },
+      "portOfEntry": "Long Beach",
+      "terminalID": 2,
+      "terminal": {
+        "terminalID": 2,
+        "terminalName": "Long Beach Container Terminal",
+        "portID": 2,
+        "link": "https://lbct.com/"
+      },
+      "rail": false,
+      "railDestination": "",
+      "railwayLine": "",
+      "railPickupNumber": "",
+      "carrier": "Express Trucking",
+      "sail": "2025-05-05T00:00:00",
+      "sailActual": "2025-05-05",
+      "berth": null,
+      "berthActual": "",
+      "arrival": "2025-05-20T00:00:00",
+      "arrivalActual": "",
+      "offload": null,
+      "offloadActual": "",
+      "available": null,
+      "pickupLFD": "2025-05-30T00:00:00",
+      "portRailwayPickup": null,
+      "returnLFD": "2025-06-10T00:00:00",
+      "loadToRail": null,
+      "railDeparture": null,
+      "railETA": null,
+      "delivered": null,
+      "returned": null,
+      "lastUpdated": "2025-05-19T00:00:00",
+      "notes": "Priority shipment"
+    },
+    {
+      "containerID": 3,
+      "containerNumber": "ZYXW9876543",
+      "projectNumber": "P10003",
+      "currentStatus": "At Port",
+      "shiplineID": 3,
+      "shipline": {
+        "shiplineID": 3,
+        "shiplineName": "CMA CGM",
+        "link": "https://www.cma-cgm.com/ebusiness/tracking",
+        "isDynamicLink": true
+      },
+      "containerSize": "40' HC",
+      "mainSource": "Import",
+      "transload": true,
+      "bolBookingNumber": "BOL456789",
+      "vendorIDNumber": "V1003",
+      "vendor": "Test Vendor 3",
+      "poNumber": "PO456789",
+      "vesselLineID": 3,
+      "vesselLine": {
+        "vesselLineID": 3,
+        "vesselLineName": "CMA CGM",
+        "link": "https://www.vesselfinder.com/vessels/",
+        "isDynamicLink": true
+      },
+      "vesselID": 3,
+      "vessel": {
+        "vesselID": 3,
+        "vesselName": "CMA CGM Antoine de Saint Exupery",
+        "vesselLineID": 3,
+        "imo": "9776418",
+        "mmsi": "235092400"
+      },
+      "voyage": "VY34567",
+      "portOfDeparture": "Hong Kong",
+      "portID": 1,
+      "port": {
+        "portID": 1,
+        "portOfEntry": "Los Angeles"
+      },
+      "portOfEntry": "Los Angeles",
+      "terminalID": 3,
+      "terminal": {
+        "terminalID": 3,
+        "terminalName": "Fenix Marine Services",
+        "portID": 1,
+        "link": "https://www.fenixmarineservices.com/"
+      },
+      "rail": true,
+      "railDestination": "Dallas",
+      "railwayLine": "Union Pacific",
+      "railPickupNumber": "RP45678",
+      "carrier": "Pacific Transport",
+      "sail": "2025-04-25T00:00:00",
+      "sailActual": "2025-04-25",
+      "berth": "2025-05-10T00:00:00",
+      "berthActual": "2025-05-10",
+      "arrival": "2025-05-10T00:00:00",
+      "arrivalActual": "2025-05-10",
+      "offload": "2025-05-11T00:00:00",
+      "offloadActual": "2025-05-11",
+      "available": "2025-05-12T00:00:00",
+      "pickupLFD": "2025-05-20T00:00:00",
+      "portRailwayPickup": null,
+      "returnLFD": "2025-06-01T00:00:00",
+      "loadToRail": null,
+      "railDeparture": null,
+      "railETA": null,
+      "delivered": null,
+      "returned": null,
+      "lastUpdated": "2025-05-19T00:00:00",
+      "notes": "Transload to local warehouse required"
+    }
+  ],
+  "dropdownOptions": [
+    {
+      "id": 1,
+      "category": "Status",
+      "value": "Not Sailed",
+      "isActive": true,
+      "sortOrder": 1
+    },
+    {
+      "id": 2,
+      "category": "Status",
+      "value": "On Vessel",
+      "isActive": true,
+      "sortOrder": 2
+    },
+    {
+      "id": 3,
+      "category": "Status",
+      "value": "At Port",
+      "isActive": true,
+      "sortOrder": 3
+    },
+    {
+      "id": 4,
+      "category": "Status",
+      "value": "On Rail",
+      "isActive": true,
+      "sortOrder": 4
+    },
+    {
+      "id": 5,
+      "category": "Status",
+      "value": "Delivered",
+      "isActive": true,
+      "sortOrder": 5
+    },
+    {
+      "id": 6,
+      "category": "Status",
+      "value": "Returned",
+      "isActive": true,
+      "sortOrder": 6
+    },
+    {
+      "id": 7,
+      "category": "ContainerSize",
+      "value": "20'",
+      "isActive": true,
+      "sortOrder": 1
+    },
+    {
+      "id": 8,
+      "category": "ContainerSize",
+      "value": "40'",
+      "isActive": true,
+      "sortOrder": 2
+    },
+    {
+      "id": 9,
+      "category": "ContainerSize",
+      "value": "40' HC",
+      "isActive": true,
+      "sortOrder": 3
+    },
+    {
+      "id": 10,
+      "category": "MainSource",
+      "value": "Import",
+      "isActive": true,
+      "sortOrder": 1
+    },
+    {
+      "id": 11,
+      "category": "MainSource",
+      "value": "Export",
+      "isActive": true,
+      "sortOrder": 2
+    }
+  ],
+  "ports": [
+    {
+      "portID": 1,
+      "portOfEntry": "Los Angeles"
+    },
+    {
+      "portID": 2,
+      "portOfEntry": "Long Beach"
+    },
+    {
+      "portID": 3,
+      "portOfEntry": "Oakland"
+    },
+    {
+      "portID": 4,
+      "portOfEntry": "Seattle"
+    }
+  ],
+  "terminals": [
+    {
+      "terminalID": 1,
+      "terminalName": "APM Terminals",
+      "portID": 1,
+      "link": "https://www.apmterminals.com/en/los-angeles"
+    },
+    {
+      "terminalID": 2,
+      "terminalName": "Long Beach Container Terminal",
+      "portID": 2,
+      "link": "https://lbct.com/"
+    },
+    {
+      "terminalID": 3,
+      "terminalName": "Fenix Marine Services",
+      "portID": 1,
+      "link": "https://www.fenixmarineservices.com/"
+    },
+    {
+      "terminalID": 4,
+      "terminalName": "TraPac",
+      "portID": 1,
+      "link": "https://www.trapac.com/"
+    }
+  ],
+  "shiplines": [
+    {
+      "shiplineID": 1,
+      "shiplineName": "Maersk Line",
+      "link": "https://www.maersk.com/tracking/",
+      "isDynamicLink": true
+    },
+    {
+      "shiplineID": 2,
+      "shiplineName": "MSC",
+      "link": "https://www.msc.com/track-a-shipment",
+      "isDynamicLink": true
+    },
+    {
+      "shiplineID": 3,
+      "shiplineName": "CMA CGM",
+      "link": "https://www.cma-cgm.com/ebusiness/tracking",
+      "isDynamicLink": true
+    },
+    {
+      "shiplineID": 4,
+      "shiplineName": "COSCO",
+      "link": "https://elines.coscoshipping.com/ebusiness/",
+      "isDynamicLink": true
+    }
+  ],
+  "vesselLines": [
+    {
+      "vesselLineID": 1,
+      "vesselLineName": "APM-Maersk",
+      "link": "https://www.vesselfinder.com/vessels/",
+      "isDynamicLink": true
+    },
+    {
+      "vesselLineID": 2,
+      "vesselLineName": "MSC",
+      "link": "https://www.vesselfinder.com/vessels/",
+      "isDynamicLink": true
+    },
+    {
+      "vesselLineID": 3,
+      "vesselLineName": "CMA CGM",
+      "link": "https://www.vesselfinder.com/vessels/",
+      "isDynamicLink": true
+    },
+    {
+      "vesselLineID": 4,
+      "vesselLineName": "COSCO",
+      "link": "https://www.vesselfinder.com/vessels/",
+      "isDynamicLink": true
+    }
+  ],
+  "vessels": [
+    {
+      "vesselID": 1,
+      "vesselName": "Maersk Seletar",
+      "vesselLineID": 1,
+      "imo": "9784350",
+      "mmsi": "563096400"
+    },
+    {
+      "vesselID": 2,
+      "vesselName": "MSC Seaside",
+      "vesselLineID": 2,
+      "imo": "9745366",
+      "mmsi": "355906000"
+    },
+    {
+      "vesselID": 3,
+      "vesselName": "CMA CGM Antoine de Saint Exupery",
+      "vesselLineID": 3,
+      "imo": "9776418",
+      "mmsi": "235092400"
+    },
+    {
+      "vesselID": 4,
+      "vesselName": "COSCO Shipping Taurus",
+      "vesselLineID": 4,
+      "imo": "9795634",
+      "mmsi": "477301500"
+    }
+  ]
+}

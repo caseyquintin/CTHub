@@ -1,0 +1,7 @@
+{
+  "/api/*": "/$1",
+  "/api/containers/status/:status": "/containers/status/:status",
+  "/api/dropdownOptions/category/:category": "/dropdownOptions/category/:category",
+  "/api/terminals/port/:portId": "/terminals/port/:portId",
+  "/api/vessels/vesselLine/:vesselLineId": "/vessels/vesselLine/:vesselLineId"
+}
