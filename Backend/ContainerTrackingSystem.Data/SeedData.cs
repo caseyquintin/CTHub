@@ -84,12 +84,12 @@ namespace ContainerTrackingSystem.Data
             var dropdownOptions = new List<DropdownOption>
             {
                 // Container Status options
-                new DropdownOption { Category = "ContainerStatus", Value = "Not Sailed", IsActive = true, SortOrder = 1 },
-                new DropdownOption { Category = "ContainerStatus", Value = "On Vessel", IsActive = true, SortOrder = 2 },
-                new DropdownOption { Category = "ContainerStatus", Value = "At Port", IsActive = true, SortOrder = 3 },
-                new DropdownOption { Category = "ContainerStatus", Value = "On Rail", IsActive = true, SortOrder = 4 },
-                new DropdownOption { Category = "ContainerStatus", Value = "Delivered", IsActive = true, SortOrder = 5 },
-                new DropdownOption { Category = "ContainerStatus", Value = "Returned", IsActive = true, SortOrder = 6 },
+                new DropdownOption { Category = "Status", Value = "Not Sailed", IsActive = true, SortOrder = 1 },
+                new DropdownOption { Category = "Status", Value = "On Vessel", IsActive = true, SortOrder = 2 },
+                new DropdownOption { Category = "Status", Value = "At Port", IsActive = true, SortOrder = 3 },
+                new DropdownOption { Category = "Status", Value = "On Rail", IsActive = true, SortOrder = 4 },
+                new DropdownOption { Category = "Status", Value = "Delivered", IsActive = true, SortOrder = 5 },
+                new DropdownOption { Category = "Status", Value = "Returned", IsActive = true, SortOrder = 6 },
                 
                 // Container Size options
                 new DropdownOption { Category = "ContainerSize", Value = "20'", IsActive = true, SortOrder = 1 },
@@ -111,7 +111,7 @@ namespace ContainerTrackingSystem.Data
             
             // Create containers
             var containers = new List<Container>();
-            var statuses = dropdownOptions.Where(d => d.Category == "ContainerStatus").Select(d => d.Value).ToList();
+            var statuses = dropdownOptions.Where(d => d.Category == "Status").Select(d => d.Value).ToList();
             var sizes = dropdownOptions.Where(d => d.Category == "ContainerSize").Select(d => d.Value).ToList();
             
             for (int i = 0; i < 50; i++)

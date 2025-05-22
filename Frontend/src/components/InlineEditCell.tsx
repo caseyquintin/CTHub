@@ -22,12 +22,13 @@ export const InlineEditCell: React.FC<InlineEditCellProps> = ({
   const { dropdownOptions } = state;
   const [editValue, setEditValue] = useState(value || '');
   const inputRef = useRef<HTMLInputElement | HTMLSelectElement>(null);
+  const measureRef = useRef<HTMLSpanElement>(null);
 
   // Get dropdown options for specific fields
   const getOptionsForField = (columnId: string) => {
     switch (columnId) {
       case 'CurrentStatus':
-        return dropdownOptions.filter(opt => opt.Category === 'ContainerStatus' && opt.IsActive);
+        return dropdownOptions.filter(opt => opt.Category === 'Status' && opt.IsActive);
       case 'ContainerSize':
         return dropdownOptions.filter(opt => opt.Category === 'ContainerSize' && opt.IsActive);
       case 'Rail':
@@ -41,6 +42,7 @@ export const InlineEditCell: React.FC<InlineEditCellProps> = ({
   const shouldUseDropdown = (columnId: string) => {
     return ['CurrentStatus', 'ContainerSize', 'Rail'].includes(columnId);
   };
+
 
   // Focus input when editing starts
   useEffect(() => {
@@ -81,7 +83,7 @@ export const InlineEditCell: React.FC<InlineEditCellProps> = ({
           onChange={handleChange}
           onBlur={handleBlur}
           onKeyDown={handleKeyDown}
-          className="w-full p-1 border border-gray-300 rounded"
+          className="w-full p-1 pr-8 border border-gray-300 rounded text-xs"
           autoComplete="off"
         >
           <option value=""></option>
@@ -101,7 +103,7 @@ export const InlineEditCell: React.FC<InlineEditCellProps> = ({
           onChange={handleChange}
           onBlur={handleBlur}
           onKeyDown={handleKeyDown}
-          className="w-full p-1 border border-gray-300 rounded"
+          className="w-full p-1 border border-gray-300 rounded text-xs"
           autoComplete="off"
         />
       );

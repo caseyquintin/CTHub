@@ -78,7 +78,7 @@ export const AdvancedSearchModal: React.FC<AdvancedSearchModalProps> = ({
   if (!isOpen) return null;
 
   const statusOptions = dropdownOptions
-    .filter(opt => opt.Category === 'ContainerStatus')
+    .filter(opt => opt.Category === 'Status')
     .map(opt => ({ id: opt.Value, label: opt.Value }));
 
   const containerSizeOptions = dropdownOptions

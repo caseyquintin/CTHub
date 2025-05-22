@@ -641,7 +641,7 @@ export const ContainerTable: React.FC<ContainerTableProps> = ({
                 {row.cells.map((cell) => (
                   <td
                     {...cell.getCellProps()}
-                    className="px-3 py-2 whitespace-nowrap text-sm text-gray-700"
+                    className="px-3 py-2 whitespace-nowrap text-xs text-gray-700"
                   >
                     {cell.render('Cell')}
                   </td>

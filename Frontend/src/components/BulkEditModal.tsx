@@ -32,7 +32,7 @@ export const BulkEditModal: React.FC<BulkEditModalProps> = ({
     const loadOptions = async () => {
       try {
         const [statusOpts, sizeOpts, portsData, vesselLinesData] = await Promise.all([
-          getDropdownOptionsByCategory('ContainerStatus'),
+          getDropdownOptionsByCategory('Status'),
           getDropdownOptionsByCategory('ContainerSize'),
           getPorts(),
           getVesselLines()

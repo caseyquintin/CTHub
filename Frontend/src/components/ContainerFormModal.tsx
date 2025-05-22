@@ -106,7 +106,7 @@ export const ContainerFormModal: React.FC<ContainerFormModalProps> = ({
     const loadOptions = async () => {
       try {
         const [statusOpts, sizeOpts, actualEstimateOpts, portsData, vesselLinesData] = await Promise.all([
-          getDropdownOptionsByCategory('ContainerStatus'),
+          getDropdownOptionsByCategory('Status'),
           getDropdownOptionsByCategory('ContainerSize'),
           getDropdownOptionsByCategory('ActualEstimate'),
           getPorts(),
