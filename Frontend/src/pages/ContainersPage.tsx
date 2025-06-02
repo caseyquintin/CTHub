@@ -71,9 +71,12 @@ const ContainersPage: React.FC = () => {
   }, [dispatch]);
 
   // Load containers based on current view and filtering method
-  const loadContainers = async (filters?: AdvancedFilters, page: number = currentPage) => {
+  const loadContainers = async (filters?: AdvancedFilters, page: number = currentPage, statusFilter?: string) => {
     try {
       dispatch({ type: 'SET_LOADING', payload: true });
+      
+      // Use the statusFilter parameter if provided, otherwise use currentView from state
+      const activeStatus = statusFilter !== undefined ? statusFilter : currentView;
       
       if (useBackendFiltering && filters) {
         // Use server-side filtering
@@ -83,7 +86,7 @@ const ContainersPage: React.FC = () => {
         setTotalPages(1);
       } else {
         // Use paginated API
-        if (currentView === 'All') {
+        if (activeStatus === 'All') {
           const response = await getContainers(page, pageSize);
           dispatch({ type: 'SET_CONTAINERS', payload: response.data });
           setTotalCount(response.totalCount);
@@ -91,7 +94,7 @@ const ContainersPage: React.FC = () => {
           setCurrentPage(response.page);
         } else {
           // Status filtering - for now, use legacy approach
-          const data = await getContainersByStatus(currentView);
+          const data = await getContainersByStatus(activeStatus);
           dispatch({ type: 'SET_CONTAINERS', payload: data });
           setTotalCount(data.length);
           setTotalPages(1);
@@ -111,8 +114,8 @@ const ContainersPage: React.FC = () => {
     setFilterStatus(status);
     setCurrentPage(1); // Reset to first page when changing status
     
-    // Reload containers with new filter
-    loadContainers(undefined, 1);
+    // Reload containers with new filter, passing the status explicitly
+    loadContainers(undefined, 1, status);
   };
 
   // Handle page change

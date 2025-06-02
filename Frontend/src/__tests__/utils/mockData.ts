@@ -7,10 +7,10 @@ export const mockContainer: Container = {
   CurrentStatus: 'At Port',
   ShiplineID: 1,
   Shipline: {
-    shiplineID: 1,
-    shiplineName: 'Maersk',
-    link: 'https://maersk.com/track',
-    isDynamicLink: true,
+    ShiplineID: 1,
+    ShiplineName: 'Maersk',
+    Link: 'https://maersk.com/track',
+    IsDynamicLink: true,
   },
   ContainerSize: '40HC',
   MainSource: 'Asia',
@@ -172,16 +172,16 @@ export const mockTerminals: Terminal[] = [
 
 export const mockShiplines: Shipline[] = [
   {
-    shiplineID: 1,
-    shiplineName: 'Maersk',
-    link: 'https://maersk.com/track',
-    isDynamicLink: true,
+    ShiplineID: 1,
+    ShiplineName: 'Maersk',
+    Link: 'https://maersk.com/track',
+    IsDynamicLink: true,
   },
   {
-    shiplineID: 2,
-    shiplineName: 'MSC',
-    link: 'https://msc.com/track',
-    isDynamicLink: true,
+    ShiplineID: 2,
+    ShiplineName: 'MSC',
+    Link: 'https://msc.com/track',
+    IsDynamicLink: true,
   },
 ];
 

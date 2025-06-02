@@ -37,8 +37,9 @@ namespace ContainerTrackingSystem.API.Controllers
             // Apply sorting
             query = ApplySorting(query, request.SortBy, request.SortDescending);
 
-            // Apply pagination with projection to avoid navigation properties
+            // Apply pagination with projection including navigation properties
             var containers = await query
+                .Include(c => c.Shipline)
                 .Skip((request.Page - 1) * request.PageSize)
                 .Take(request.PageSize)
                 .Select(c => new Container
@@ -48,6 +49,13 @@ namespace ContainerTrackingSystem.API.Controllers
                     ProjectNumber = c.ProjectNumber,
                     CurrentStatus = c.CurrentStatus,
                     ShiplineID = c.ShiplineID,
+                    Shipline = c.Shipline == null ? null : new Shipline
+                    {
+                        ShiplineID = c.Shipline.ShiplineID,
+                        ShiplineName = c.Shipline.ShiplineName,
+                        Link = c.Shipline.Link,
+                        IsDynamicLink = c.Shipline.IsDynamicLink
+                    },
                     ContainerSize = c.ContainerSize,
                     MainSource = c.MainSource,
                     Transload = c.Transload,

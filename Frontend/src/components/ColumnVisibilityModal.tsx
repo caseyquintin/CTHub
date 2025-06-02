@@ -28,6 +28,7 @@ export const ColumnVisibilityModal: React.FC<ColumnVisibilityModalProps> = ({
       projectNumber: true,
       currentStatus: true,
       shipline: true,
+      shiplineId: true,
       containerSize: true,
       mainSource: false,
       transload: false,
@@ -87,6 +88,7 @@ export const ColumnVisibilityModal: React.FC<ColumnVisibilityModalProps> = ({
         { id: 'vendor', label: 'Vendor' },
         { id: 'poNumber', label: 'PO Number' },
         { id: 'shipline', label: 'Shipline' },
+        { id: 'shiplineId', label: 'Shipline ID' },
       ],
     },
     {

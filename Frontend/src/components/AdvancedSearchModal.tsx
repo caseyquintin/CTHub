@@ -87,7 +87,7 @@ export const AdvancedSearchModal: React.FC<AdvancedSearchModalProps> = ({
 
   // Get unique values from containers
   const shiplineOptions = Array.from(
-    new Set(containers.map(c => c.Shipline?.shiplineName).filter(Boolean))
+    new Set(containers.map(c => c.Shipline?.ShiplineName).filter(Boolean))
   ).map(name => ({ id: name!, label: name! }));
 
   const portOptions = Array.from(

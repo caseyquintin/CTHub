@@ -75,10 +75,10 @@ export interface Terminal {
 }
 
 export interface Shipline {
-  shiplineID: number;
-  shiplineName: string;
-  link?: string;
-  isDynamicLink: boolean;
+  ShiplineID: number;
+  ShiplineName: string;
+  Link?: string;
+  IsDynamicLink?: boolean;
 }
 
 export interface VesselLine {

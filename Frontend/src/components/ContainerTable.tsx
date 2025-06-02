@@ -156,19 +156,22 @@ export const ContainerTable: React.FC<ContainerTableProps> = ({
       },
       {
         Header: 'Shipline',
-        accessor: (row: Container) => row.Shipline?.shiplineName,
+        accessor: (row: Container) => row.Shipline?.ShiplineName,
         id: 'shiplineName',
         visible: columnVisibility.shipline,
         Cell: ({ row }: any) => {
           const container = row.original;
-          const shipline = container.shipline;
-          if (!shipline) return null;
+          const shipline = container.Shipline;
+          
+          if (!shipline || !shipline.ShiplineName) {
+            return <span className="text-gray-400">-</span>;
+          }
           
           const trackingUrl = getShiplineTrackingUrl(shipline, container);
           
           return (
             <div className="flex items-center">
-              <span className="mr-2">{shipline.shiplineName}</span>
+              <span className="mr-2">{shipline.ShiplineName}</span>
               {trackingUrl && (
                 <a 
                   href={trackingUrl} 
@@ -182,6 +185,13 @@ export const ContainerTable: React.FC<ContainerTableProps> = ({
             </div>
           );
         },
+      },
+      {
+        Header: 'Shipline ID',
+        accessor: 'ShiplineID',
+        id: 'shiplineId',
+        visible: columnVisibility.shiplineId !== false,
+        Cell: ({ value }: any) => value || '-',
       },
       {
         Header: 'Size',

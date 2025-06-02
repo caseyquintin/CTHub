@@ -41,8 +41,8 @@ export const generateTrackingUrl = (
  * Generates a shipline tracking URL
  */
 export const getShiplineTrackingUrl = (shipline: Shipline | undefined, container: Container): string => {
-  if (!shipline) return '';
-  return generateTrackingUrl(shipline.link, container, shipline.isDynamicLink);
+  if (!shipline || !shipline.Link) return '';
+  return generateTrackingUrl(shipline.Link, container, shipline.IsDynamicLink ?? false);
 };
 
 /**

@@ -47,6 +47,7 @@ const initialState: AppState = {
     ProjectNumber: true,
     CurrentStatus: true,
     Shipline: true,
+    shiplineId: true,
     ContainerSize: true,
     MainSource: false,
     Transload: false,

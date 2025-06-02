@@ -51,7 +51,7 @@ export const applyAdvancedFilters = (containers: Container[], filters: AdvancedF
   // Shipline filter
   if (filters.shipline.length > 0) {
     filteredContainers = filteredContainers.filter(container =>
-      container.Shipline && filters.shipline.includes(container.Shipline.shiplineName)
+      container.Shipline && filters.shipline.includes(container.Shipline.ShiplineName)
     );
   }
 

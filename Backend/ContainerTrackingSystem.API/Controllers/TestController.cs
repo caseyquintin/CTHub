@@ -1,5 +1,8 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Data.SqlClient;
+using Microsoft.EntityFrameworkCore;
+using ContainerTrackingSystem.Core.Interfaces;
+using System.Linq;
 
 namespace ContainerTrackingSystem.API.Controllers
 {
@@ -8,10 +11,12 @@ namespace ContainerTrackingSystem.API.Controllers
     public class TestController : ControllerBase
     {
         private readonly IConfiguration _configuration;
+        private readonly IUnitOfWork _unitOfWork;
 
-        public TestController(IConfiguration configuration)
+        public TestController(IConfiguration configuration, IUnitOfWork unitOfWork)
         {
             _configuration = configuration;
+            _unitOfWork = unitOfWork;
         }
 
         [HttpGet("connection")]
@@ -52,6 +57,48 @@ namespace ContainerTrackingSystem.API.Controllers
                     HardcodedConnectionString = connectionString.Replace("Containers1234!", "***"),
                     ConfigConnectionString = configConnectionString?.Replace("Containers1234!", "***")
                 });
+            }
+        }
+
+        [HttpGet("sample-container")]
+        public async Task<IActionResult> GetSampleContainer()
+        {
+            try
+            {
+                var container = await _unitOfWork.Containers.Query()
+                    .Include(c => c.Shipline)
+                    .Include(c => c.VesselLine)
+                    .Include(c => c.Vessel)
+                    .Include(c => c.Port)
+                    .Include(c => c.Terminal)
+                    .FirstOrDefaultAsync();
+
+                if (container == null)
+                {
+                    return NotFound("No containers found in the database");
+                }
+
+                return Ok(new
+                {
+                    Container = container,
+                    ShiplineInfo = container.Shipline != null ? new
+                    {
+                        ShiplineID = container.Shipline.ShiplineID,
+                        ShiplineName = container.Shipline.ShiplineName,
+                        Link = container.Shipline.Link,
+                        IsDynamicLink = container.Shipline.IsDynamicLink
+                    } : null,
+                    Metadata = new
+                    {
+                        ContainerShiplineID = container.ShiplineID,
+                        ShiplineExists = container.Shipline != null,
+                        ShiplineType = container.Shipline?.GetType().Name
+                    }
+                });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { Error = ex.Message, StackTrace = ex.StackTrace });
             }
         }
 
