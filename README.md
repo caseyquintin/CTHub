@@ -185,31 +185,6 @@ If you encounter issues while running the application, please see the `TROUBLESH
 - Smart date handling (auto-completing partial dates)
 - Conditional form fields (e.g., rail fields disabled when Rail is "No")
 
-## Recent Updates (June 2, 2025)
-
-### Status Filter System Overhaul
-- **Fixed Filter Button Functionality**: Resolved status filter tabs not working correctly due to case sensitivity mismatch between frontend and database (e.g., "On Vessel" vs "ON VESSEL")
-- **Resolved API Circular Reference Errors**: Fixed JSON serialization issues in status endpoints by implementing proper projection patterns to avoid circular references with navigation properties
-- **Reorganized Status Filter Tabs**: Updated to match actual database statuses with logical workflow groupings:
-  - All Containers
-  - Not Sailed
-  - On Vessel (groups: ON VESSEL, XLOADING AT SEA)
-  - Rail (groups: XLOADING TO RAIL, ON RAIL)
-  - Available
-  - Not Available/Holds (groups: NOT AVAILABLE, NA - CUSTOMS, NA - LINE HOLD, NA - FEES, NA - LOCATION)
-  - In Transit (groups: PU BY VENDOR, PU APPT REQ, PU APPT SET, DEL APPT REQ, DEL APPT SET)
-  - Transloading
-  - Delivered
-  - Returned
-
-### Enhanced Pagination System
-- **Improved Layout**: 
-  - Top pagination: Selected containers count (bold) with bulk action buttons on left, page navigation pinned to right
-  - Bottom pagination: "Showing X to Y of Z results", page size selector, and page navigation
-- **Fixed Page Size Dropdown**: Resolved delayed update issue where page size changes weren't immediately reflected
-- **Consistent UI**: Pagination now appears on all tabs regardless of data volume, providing a consistent user experience
-- **Better UX**: Moved selected containers info to top pagination bar to prevent table jumping when selecting items
-
 ## License
 
 This project is licensed under the MIT License - see the LICENSE file for details.
