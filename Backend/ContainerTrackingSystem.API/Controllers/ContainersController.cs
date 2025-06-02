@@ -153,119 +153,16 @@ namespace ContainerTrackingSystem.API.Controllers
         [HttpGet("status/{status}")]
         public async Task<ActionResult<IEnumerable<Container>>> GetContainersByStatus(string status)
         {
-            try
-            {
-                Console.WriteLine($"GetContainersByStatus called with raw status: '{status}'");
-                
-                // URL decode the status parameter to handle spaces and special characters
-                var decodedStatus = System.Net.WebUtility.UrlDecode(status);
-                Console.WriteLine($"Decoded status: '{decodedStatus}'");
-                
-                var containers = await _unitOfWork.Containers.Query()
-                    .Where(c => c.CurrentStatus == decodedStatus)
-                    .Select(c => new Container
-                    {
-                        ContainerID = c.ContainerID,
-                        ContainerNumber = c.ContainerNumber,
-                        ProjectNumber = c.ProjectNumber,
-                        CurrentStatus = c.CurrentStatus,
-                        ShiplineID = c.ShiplineID,
-                        Shipline = c.Shipline != null ? new Shipline
-                        {
-                            ShiplineID = c.Shipline.ShiplineID,
-                            ShiplineName = c.Shipline.ShiplineName,
-                            Link = c.Shipline.Link,
-                            IsDynamicLink = c.Shipline.IsDynamicLink
-                        } : null,
-                        ContainerSize = c.ContainerSize,
-                        MainSource = c.MainSource,
-                        Transload = c.Transload,
-                        BOLBookingNumber = c.BOLBookingNumber,
-                        VendorIDNumber = c.VendorIDNumber,
-                        Vendor = c.Vendor,
-                        PONumber = c.PONumber,
-                        VesselLineID = c.VesselLineID,
-                        VesselLine = c.VesselLine != null ? new VesselLine
-                        {
-                            VesselLineID = c.VesselLine.VesselLineID,
-                            VesselLineName = c.VesselLine.VesselLineName,
-                            Link = c.VesselLine.Link,
-                            IsDynamicLink = c.VesselLine.IsDynamicLink
-                        } : null,
-                        VesselID = c.VesselID,
-                        Vessel = c.Vessel != null ? new Vessel
-                        {
-                            VesselID = c.Vessel.VesselID,
-                            VesselName = c.Vessel.VesselName,
-                            VesselLineID = c.Vessel.VesselLineID,
-                            IMO = c.Vessel.IMO,
-                            MMSI = c.Vessel.MMSI
-                        } : null,
-                        Voyage = c.Voyage,
-                        PortOfDeparture = c.PortOfDeparture,
-                        PortID = c.PortID,
-                        Port = c.Port != null ? new Port
-                        {
-                            PortID = c.Port.PortID,
-                            PortOfEntry = c.Port.PortOfEntry
-                        } : null,
-                        PortOfEntry = c.PortOfEntry,
-                        TerminalID = c.TerminalID,
-                        Terminal = c.Terminal != null ? new Terminal
-                        {
-                            TerminalID = c.Terminal.TerminalID,
-                            TerminalName = c.Terminal.TerminalName,
-                            PortID = c.Terminal.PortID,
-                            Link = c.Terminal.Link
-                        } : null,
-                        Rail = c.Rail,
-                        RailDestination = c.RailDestination,
-                        RailwayLine = c.RailwayLine,
-                        RailPickupNumber = c.RailPickupNumber,
-                        CarrierID = c.CarrierID,
-                        Carrier = c.Carrier,
-                        Sail = c.Sail,
-                        SailActual = c.SailActual,
-                        Berth = c.Berth,
-                        BerthActual = c.BerthActual,
-                        Arrival = c.Arrival,
-                        ArrivalActual = c.ArrivalActual,
-                        Offload = c.Offload,
-                        OffloadActual = c.OffloadActual,
-                        Available = c.Available,
-                        PickupLFD = c.PickupLFD,
-                        PortRailwayPickup = c.PortRailwayPickup,
-                        ReturnLFD = c.ReturnLFD,
-                        LoadToRail = c.LoadToRail,
-                        RailDeparture = c.RailDeparture,
-                        RailETA = c.RailETA,
-                        Delivered = c.Delivered,
-                        Returned = c.Returned,
-                        LastUpdated = c.LastUpdated,
-                        Notes = c.Notes
-                    })
-                    .ToListAsync();
+            var containers = await _unitOfWork.Containers.Query()
+                .Where(c => c.CurrentStatus == status)
+                .Include(c => c.Shipline)
+                .Include(c => c.VesselLine)
+                .Include(c => c.Vessel)
+                .Include(c => c.Port)
+                .Include(c => c.Terminal)
+                .ToListAsync();
 
-                Console.WriteLine($"Found {containers.Count} containers with status '{decodedStatus}'");
-                
-                return Ok(containers);
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine($"Error in GetContainersByStatus: {ex.Message}");
-                Console.WriteLine($"Stack trace: {ex.StackTrace}");
-                if (ex.InnerException != null)
-                {
-                    Console.WriteLine($"Inner exception: {ex.InnerException.Message}");
-                    Console.WriteLine($"Inner stack trace: {ex.InnerException.StackTrace}");
-                }
-                return StatusCode(500, new { 
-                    error = ex.Message,
-                    innerError = ex.InnerException?.Message,
-                    status = status,
-                    type = ex.GetType().Name
-                });
-            }
+            return Ok(containers);
         }
 
         // PUT: api/Containers/5

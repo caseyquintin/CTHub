@@ -71,14 +71,12 @@ const ContainersPage: React.FC = () => {
   }, [dispatch]);
 
   // Load containers based on current view and filtering method
-  const loadContainers = async (filters?: AdvancedFilters, page: number = currentPage, statusFilter?: string, customPageSize?: number) => {
+  const loadContainers = async (filters?: AdvancedFilters, page: number = currentPage, statusFilter?: string) => {
     try {
       dispatch({ type: 'SET_LOADING', payload: true });
       
       // Use the statusFilter parameter if provided, otherwise use currentView from state
       const activeStatus = statusFilter !== undefined ? statusFilter : currentView;
-      // Use customPageSize if provided, otherwise use state pageSize
-      const activePageSize = customPageSize !== undefined ? customPageSize : pageSize;
       
       if (useBackendFiltering && filters) {
         // Use server-side filtering
@@ -89,73 +87,17 @@ const ContainersPage: React.FC = () => {
       } else {
         // Use paginated API
         if (activeStatus === 'All') {
-          const response = await getContainers(page, activePageSize);
+          const response = await getContainers(page, pageSize);
           dispatch({ type: 'SET_CONTAINERS', payload: response.data });
           setTotalCount(response.totalCount);
           setTotalPages(response.totalPages);
           setCurrentPage(response.page);
         } else {
-          // Check if this is a configured status filter
-          const statusFilter = statusFilters.find(f => f.id === activeStatus);
-          
-          if (statusFilter) {
-            if (statusFilter.statuses) {
-              // For grouped statuses, we need to fetch all and then paginate client-side
-              // First, get all containers matching the grouped statuses
-              const allMatchingContainers: Container[] = [];
-              
-              for (const status of statusFilter.statuses) {
-                try {
-                  const data = await getContainersByStatus(status);
-                  allMatchingContainers.push(...data);
-                } catch (error) {
-                  console.error(`Error loading containers for status ${status}:`, error);
-                }
-              }
-              
-              // Calculate pagination
-              const totalItems = allMatchingContainers.length;
-              const totalPagesCalc = Math.ceil(totalItems / activePageSize);
-              const startIndex = (page - 1) * activePageSize;
-              const endIndex = startIndex + activePageSize;
-              const paginatedData = allMatchingContainers.slice(startIndex, endIndex);
-              
-              dispatch({ type: 'SET_CONTAINERS', payload: paginatedData });
-              setTotalCount(totalItems);
-              setTotalPages(totalPagesCalc);
-              setCurrentPage(page);
-            } else if (statusFilter.singleStatus) {
-              // Single status filtering with proper database status
-              const data = await getContainersByStatus(statusFilter.singleStatus);
-              
-              // Apply client-side pagination for single status
-              const totalItems = data.length;
-              const totalPagesCalc = Math.ceil(totalItems / activePageSize);
-              const startIndex = (page - 1) * activePageSize;
-              const endIndex = startIndex + activePageSize;
-              const paginatedData = data.slice(startIndex, endIndex);
-              
-              dispatch({ type: 'SET_CONTAINERS', payload: paginatedData });
-              setTotalCount(totalItems);
-              setTotalPages(totalPagesCalc);
-              setCurrentPage(page);
-            }
-          } else {
-            // Fallback for direct status filtering (shouldn't happen with current setup)
-            const data = await getContainersByStatus(activeStatus);
-            
-            // Apply client-side pagination
-            const totalItems = data.length;
-            const totalPagesCalc = Math.ceil(totalItems / activePageSize);
-            const startIndex = (page - 1) * activePageSize;
-            const endIndex = startIndex + activePageSize;
-            const paginatedData = data.slice(startIndex, endIndex);
-            
-            dispatch({ type: 'SET_CONTAINERS', payload: paginatedData });
-            setTotalCount(totalItems);
-            setTotalPages(totalPagesCalc);
-            setCurrentPage(page);
-          }
+          // Status filtering - for now, use legacy approach
+          const data = await getContainersByStatus(activeStatus);
+          dispatch({ type: 'SET_CONTAINERS', payload: data });
+          setTotalCount(data.length);
+          setTotalPages(1);
         }
       }
     } catch (error) {
@@ -179,14 +121,14 @@ const ContainersPage: React.FC = () => {
   // Handle page change
   const handlePageChange = (page: number) => {
     setCurrentPage(page);
-    loadContainers(undefined, page, filterStatus);
+    loadContainers(undefined, page);
   };
 
   // Handle page size change
   const handlePageSizeChange = (newPageSize: number) => {
     setPageSize(newPageSize);
     setCurrentPage(1); // Reset to first page when changing page size
-    loadContainers(undefined, 1, filterStatus, newPageSize);
+    loadContainers(undefined, 1);
   };
 
   // Handle container operations
@@ -265,18 +207,15 @@ const ContainersPage: React.FC = () => {
     setIsEditModalOpen(true);
   };
 
-  // Filter statuses for view selection - grouped for efficient workflow
-  const statusFilters: Array<{id: string, label: string, statuses?: string[], singleStatus?: string}> = [
+  // Filter statuses for view selection
+  const statusFilters = [
     { id: 'All', label: 'All Containers' },
-    { id: 'NOT_SAILED', label: 'Not Sailed', singleStatus: 'NOT SAILED' },
-    { id: 'ON_VESSEL', label: 'On Vessel', statuses: ['ON VESSEL', 'XLOADING AT SEA'] },
-    { id: 'RAIL', label: 'Rail', statuses: ['XLOADING TO RAIL', 'ON RAIL'] },
-    { id: 'AVAILABLE', label: 'Available', singleStatus: 'AVAILABLE' },
-    { id: 'NOT_AVAILABLE_HOLDS', label: 'Not Available/Holds', statuses: ['NOT AVAILABLE', 'NA - CUSTOMS', 'NA - LINE HOLD', 'NA - FEES', 'NA - LOCATION'] },
-    { id: 'IN_TRANSIT', label: 'In Transit', statuses: ['PU BY VENDOR', 'PU APPT REQ', 'PU APPT SET', 'DEL APPT REQ', 'DEL APPT SET'] },
-    { id: 'TRANSLOADING', label: 'Transloading', singleStatus: 'TRANSLOADING' },
-    { id: 'DELIVERED', label: 'Delivered', singleStatus: 'DELIVERED' },
-    { id: 'RETURNED', label: 'Returned', singleStatus: 'RETURNED' },
+    { id: 'Not Sailed', label: 'Not Sailed' },
+    { id: 'On Vessel', label: 'On Vessel' },
+    { id: 'At Port', label: 'At Port' },
+    { id: 'On Rail', label: 'On Rail' },
+    { id: 'Delivered', label: 'Delivered' },
+    { id: 'Returned', label: 'Returned' },
   ];
 
   // Apply filters to containers
@@ -450,6 +389,30 @@ const ContainersPage: React.FC = () => {
           </div>
         </div>
 
+        {/* Bulk Actions */}
+        {selectedContainers.length > 0 && (
+          <div className="mt-4 pt-4 border-t border-gray-200">
+            <div className="flex items-center justify-between">
+              <span className="text-sm text-gray-600">
+                {selectedContainers.length} container{selectedContainers.length !== 1 ? 's' : ''} selected
+              </span>
+              <div className="flex gap-2">
+                <button
+                  onClick={() => setIsBulkEditModalOpen(true)}
+                  className="px-3 py-1 text-sm bg-blue-600 text-white rounded hover:bg-blue-700"
+                >
+                  Bulk Edit
+                </button>
+                <button
+                  onClick={() => handleDeleteContainer(selectedContainers.map(c => c.ContainerID))}
+                  className="px-3 py-1 text-sm bg-red-600 text-white rounded hover:bg-red-700"
+                >
+                  Delete Selected
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
       </div>
 
       {/* Container Table */}
@@ -463,7 +426,7 @@ const ContainersPage: React.FC = () => {
       ) : (
         <div className="bg-white shadow-md rounded-lg overflow-hidden">
           {/* Top Pagination */}
-          {totalCount > 0 && (
+          {totalPages > 1 && (
             <div className="px-4 py-3 border-b border-gray-200">
               <Pagination
                 currentPage={currentPage}
@@ -473,10 +436,6 @@ const ContainersPage: React.FC = () => {
                 onPageChange={handlePageChange}
                 onPageSizeChange={handlePageSizeChange}
                 loading={loading}
-                selectedCount={selectedContainers.length}
-                onBulkEdit={selectedContainers.length > 0 ? () => setIsBulkEditModalOpen(true) : undefined}
-                onBulkDelete={selectedContainers.length > 0 ? () => handleDeleteContainer(selectedContainers.map(c => c.ContainerID)) : undefined}
-                position="top"
               />
             </div>
           )}
@@ -488,7 +447,7 @@ const ContainersPage: React.FC = () => {
           />
           
           {/* Bottom Pagination */}
-          {totalCount > 0 && (
+          {totalPages > 1 && (
             <div className="px-4 py-3 border-t border-gray-200">
               <Pagination
                 currentPage={currentPage}
@@ -498,7 +457,6 @@ const ContainersPage: React.FC = () => {
                 onPageChange={handlePageChange}
                 onPageSizeChange={handlePageSizeChange}
                 loading={loading}
-                position="bottom"
               />
             </div>
           )}

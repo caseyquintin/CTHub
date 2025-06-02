@@ -23,7 +23,7 @@ namespace ContainerTrackingSystem.API.Controllers
         public IActionResult TestConnection()
         {
             // Temporarily hardcode the connection string to test
-            var connectionString = "Server=LT-QUINTIN2\\CTHUB;Database=ContainerTrackingSystem;User Id=api_user;Password=Containers1234!;TrustServerCertificate=True;";
+            var connectionString = "Server=LT-QUINTIN2\\CTHUB;Database=CTHub;User Id=api_user;Password=Containers1234!;TrustServerCertificate=True;";
             var configConnectionString = _configuration.GetConnectionString("CTHubConnection");
             
             try
@@ -105,7 +105,7 @@ namespace ContainerTrackingSystem.API.Controllers
         [HttpGet("schema")]
         public IActionResult GetTableSchema()
         {
-            var connectionString = "Server=LT-QUINTIN2\\CTHUB;Database=ContainerTrackingSystem;User Id=api_user;Password=Containers1234!;TrustServerCertificate=True;";
+            var connectionString = "Server=LT-QUINTIN2\\CTHUB;Database=CTHub;User Id=api_user;Password=Containers1234!;TrustServerCertificate=True;";
             
             try
             {
@@ -148,7 +148,7 @@ namespace ContainerTrackingSystem.API.Controllers
         [HttpGet("tables")]
         public IActionResult GetTables()
         {
-            var connectionString = "Server=LT-QUINTIN2\\CTHUB;Database=ContainerTrackingSystem;User Id=api_user;Password=Containers1234!;TrustServerCertificate=True;";
+            var connectionString = "Server=LT-QUINTIN2\\CTHUB;Database=CTHub;User Id=api_user;Password=Containers1234!;TrustServerCertificate=True;";
             
             try
             {
@@ -169,36 +169,6 @@ namespace ContainerTrackingSystem.API.Controllers
             catch (Exception ex)
             {
                 return StatusCode(500, new { Error = ex.Message });
-            }
-        }
-
-        [HttpGet("status-values")]
-        public async Task<IActionResult> GetStatusValues()
-        {
-            try
-            {
-                var statusValues = await _unitOfWork.Containers.Query()
-                    .Select(c => c.CurrentStatus)
-                    .Distinct()
-                    .OrderBy(s => s)
-                    .ToListAsync();
-
-                var statusCounts = await _unitOfWork.Containers.Query()
-                    .GroupBy(c => c.CurrentStatus)
-                    .Select(g => new { Status = g.Key, Count = g.Count() })
-                    .OrderBy(x => x.Status)
-                    .ToListAsync();
-
-                return Ok(new
-                {
-                    DistinctStatuses = statusValues,
-                    StatusCounts = statusCounts,
-                    TotalContainers = await _unitOfWork.Containers.Query().CountAsync()
-                });
-            }
-            catch (Exception ex)
-            {
-                return StatusCode(500, new { Error = ex.Message, StackTrace = ex.StackTrace });
             }
         }
     }
