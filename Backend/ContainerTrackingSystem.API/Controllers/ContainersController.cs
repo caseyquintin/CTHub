@@ -153,16 +153,112 @@ namespace ContainerTrackingSystem.API.Controllers
         [HttpGet("status/{status}")]
         public async Task<ActionResult<IEnumerable<Container>>> GetContainersByStatus(string status)
         {
-            var containers = await _unitOfWork.Containers.Query()
-                .Where(c => c.CurrentStatus == status)
-                .Include(c => c.Shipline)
-                .Include(c => c.VesselLine)
-                .Include(c => c.Vessel)
-                .Include(c => c.Port)
-                .Include(c => c.Terminal)
-                .ToListAsync();
+            try
+            {
+                // Map frontend status to database status values
+                List<string> statusesToMatch = new List<string>();
+                
+                switch (status)
+                {
+                    case "Not Sailed":
+                        statusesToMatch.Add("NOT SAILED");
+                        break;
+                    case "On Vessel":
+                        statusesToMatch.Add("ON VESSEL");
+                        statusesToMatch.Add("XLOADING AT SEA");
+                        break;
+                    case "At Port":
+                        statusesToMatch.Add("AT PORT");
+                        break;
+                    case "On Rail":
+                        statusesToMatch.Add("ON RAIL");
+                        statusesToMatch.Add("XLOADING TO RAIL");
+                        break;
+                    case "Delivered":
+                        statusesToMatch.Add("DELIVERED");
+                        break;
+                    case "Returned":
+                        statusesToMatch.Add("RETURNED");
+                        break;
+                    default:
+                        // If not a special case, try uppercase version
+                        statusesToMatch.Add(status.ToUpper());
+                        break;
+                }
+                
+                // Log for debugging
+                Console.WriteLine($"[DEBUG] GetContainersByStatus called with status: '{status}'");
+                Console.WriteLine($"[DEBUG] Looking for statuses: {string.Join(", ", statusesToMatch)}");
+                
+                var containers = await _unitOfWork.Containers.Query()
+                    .Where(c => c.CurrentStatus != null && statusesToMatch.Contains(c.CurrentStatus))
+                    .Include(c => c.Shipline)
+                    .Select(c => new Container
+                    {
+                        ContainerID = c.ContainerID,
+                        ContainerNumber = c.ContainerNumber,
+                        ProjectNumber = c.ProjectNumber,
+                        CurrentStatus = c.CurrentStatus,
+                        ShiplineID = c.ShiplineID,
+                        Shipline = c.Shipline == null ? null : new Shipline
+                        {
+                            ShiplineID = c.Shipline.ShiplineID,
+                            ShiplineName = c.Shipline.ShiplineName,
+                            Link = c.Shipline.Link,
+                            IsDynamicLink = c.Shipline.IsDynamicLink
+                        },
+                        ContainerSize = c.ContainerSize,
+                        MainSource = c.MainSource,
+                        Transload = c.Transload,
+                        BOLBookingNumber = c.BOLBookingNumber,
+                        VendorIDNumber = c.VendorIDNumber,
+                        Vendor = c.Vendor,
+                        PONumber = c.PONumber,
+                        VesselLineID = c.VesselLineID,
+                        VesselID = c.VesselID,
+                        Voyage = c.Voyage,
+                        PortOfDeparture = c.PortOfDeparture,
+                        PortID = c.PortID,
+                        PortOfEntry = c.PortOfEntry,
+                        TerminalID = c.TerminalID,
+                        Rail = c.Rail,
+                        RailDestination = c.RailDestination,
+                        RailwayLine = c.RailwayLine,
+                        RailPickupNumber = c.RailPickupNumber,
+                        CarrierID = c.CarrierID,
+                        Carrier = c.Carrier,
+                        Sail = c.Sail,
+                        SailActual = c.SailActual,
+                        Berth = c.Berth,
+                        BerthActual = c.BerthActual,
+                        Arrival = c.Arrival,
+                        ArrivalActual = c.ArrivalActual,
+                        Offload = c.Offload,
+                        OffloadActual = c.OffloadActual,
+                        Available = c.Available,
+                        PickupLFD = c.PickupLFD,
+                        PortRailwayPickup = c.PortRailwayPickup,
+                        ReturnLFD = c.ReturnLFD,
+                        LoadToRail = c.LoadToRail,
+                        RailDeparture = c.RailDeparture,
+                        RailETA = c.RailETA,
+                        Delivered = c.Delivered,
+                        Returned = c.Returned,
+                        LastUpdated = c.LastUpdated,
+                        Notes = c.Notes
+                    })
+                    .ToListAsync();
+                
+                Console.WriteLine($"[DEBUG] Found {containers.Count} containers");
 
-            return Ok(containers);
+                return Ok(containers);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"[ERROR] GetContainersByStatus error: {ex.Message}");
+                Console.WriteLine($"[ERROR] Stack trace: {ex.StackTrace}");
+                return StatusCode(500, new { error = "An error occurred while fetching containers by status", details = ex.Message });
+            }
         }
 
         // PUT: api/Containers/5
