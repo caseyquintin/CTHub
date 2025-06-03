@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useMemo, useRef } from 'react';
-import { useTable, useSortBy, useFilters, useRowSelect, Column, TableState } from 'react-table';
+import { useTable, useSortBy, useRowSelect, Column, TableState } from 'react-table';
 import { useAppContext } from '../context/AppContext';
 import { Container } from '../types';
 import { format, isValid } from 'date-fns';
@@ -8,6 +8,8 @@ import { InlineEditCell } from './InlineEditCell';
 import { patchContainer } from '../api';
 import { toast } from 'react-toastify';
 import { getShiplineTrackingUrl, getVesselLineTrackingUrl, getTerminalTrackingUrl } from '../utils/linkGenerator';
+import { ColumnFilter } from './ColumnFilter';
+import { ActiveFilters } from './ActiveFilters';
 
 interface ContainerTableProps {
   onEdit: (container: Container) => void;
@@ -32,10 +34,47 @@ export const ContainerTable: React.FC<ContainerTableProps> = ({
 }) => {
   const { state: appState, dispatch } = useAppContext();
   const { containers, loading, columnVisibility } = appState;
+  
+  // Early return if loading to prevent React Table initialization issues
+  if (loading) {
+    return <div className="flex justify-center p-8">Loading containers...</div>;
+  }
   const [editingCell, setEditingCell] = useState<{ rowIndex: number; columnId: string } | null>(null);
+  const [columnFilters, setColumnFilters] = useState<Record<string, string[]>>({});
   const topScrollRef = useRef<HTMLDivElement>(null);
   const tableScrollRef = useRef<HTMLDivElement>(null);
   const tableRef = useRef<HTMLTableElement>(null);
+
+  // Column name mapping for display
+  const getColumnDisplayName = (columnId: string): string => {
+    const columnNameMap: Record<string, string> = {
+      'ContainerNumber': 'Container Number',
+      'ProjectNumber': 'Project #',
+      'CurrentStatus': 'Status',
+      'shiplineName': 'Shipline',
+      'shiplineId': 'Shipline ID',
+      'ContainerSize': 'Size',
+      'BOLBookingNumber': 'BOL/Booking #',
+      'Vendor': 'Vendor',
+      'PONumber': 'PO #',
+      'vesselLineName': 'Vessel Line',
+      'vesselName': 'Vessel',
+      'Voyage': 'Voyage',
+      'PortOfEntry': 'Port of Entry',
+      'terminalName': 'Terminal',
+      'Rail': 'Rail',
+      'Sail': 'Sail',
+      'Arrival': 'Arrival',
+      'Available': 'Available',
+      'PickupLFD': 'Pickup LFD',
+      'ReturnLFD': 'Return LFD',
+      'Delivered': 'Delivered',
+      'Returned': 'Returned',
+      'LastUpdated': 'Last Updated',
+      'Notes': 'Notes',
+    };
+    return columnNameMap[columnId] || columnId;
+  };
 
   // Ensure we have valid array data before proceeding
   const ensureArray = (data: any): Container[] => {
@@ -44,8 +83,109 @@ export const ContainerTable: React.FC<ContainerTableProps> = ({
     return [];
   };
 
+  // Apply column filters
+  const applyColumnFilters = useMemo(() => (containers: Container[]) => {
+    let filtered = [...containers];
+    
+    Object.entries(columnFilters).forEach(([columnId, selectedValues]) => {
+      if (selectedValues.length > 0) {
+        filtered = filtered.filter(container => {
+          let value: any = '';
+          
+          // Get the value based on column ID
+          switch (columnId) {
+            case 'ContainerNumber':
+              value = container.ContainerNumber || '';
+              break;
+            case 'ProjectNumber':
+              value = container.ProjectNumber || '';
+              break;
+            case 'CurrentStatus':
+              value = container.CurrentStatus || '';
+              break;
+            case 'shiplineName':
+              value = container.Shipline?.ShiplineName || '';
+              break;
+            case 'ContainerSize':
+              value = container.ContainerSize || '';
+              break;
+            case 'BOLBookingNumber':
+              value = container.BOLBookingNumber || '';
+              break;
+            case 'Vendor':
+              value = container.Vendor || '';
+              break;
+            case 'PONumber':
+              value = container.PONumber || '';
+              break;
+            case 'vesselLineName':
+              value = container.VesselLine?.vesselLineName || '';
+              break;
+            case 'vesselName':
+              value = container.Vessel?.vesselName || '';
+              break;
+            case 'Voyage':
+              value = container.Voyage || '';
+              break;
+            case 'PortOfEntry':
+              value = container.PortOfEntry || '';
+              break;
+            case 'terminalName':
+              value = container.Terminal?.terminalName || '';
+              break;
+            case 'Rail':
+              value = container.Rail || 'No';
+              break;
+            case 'ShiplineID':
+              value = String(container.ShiplineID || '');
+              break;
+            case 'Sail':
+              value = container.Sail ? formatDate(container.Sail) : '';
+              break;
+            case 'Arrival':
+              value = container.Arrival ? formatDate(container.Arrival) : '';
+              break;
+            case 'Available':
+              value = container.Available ? formatDate(container.Available) : '';
+              break;
+            case 'PickupLFD':
+              value = container.PickupLFD ? formatDate(container.PickupLFD) : '';
+              break;
+            case 'ReturnLFD':
+              value = container.ReturnLFD ? formatDate(container.ReturnLFD) : '';
+              break;
+            case 'Delivered':
+              value = container.Delivered ? formatDate(container.Delivered) : '';
+              break;
+            case 'Returned':
+              value = container.Returned ? formatDate(container.Returned) : '';
+              break;
+            case 'LastUpdated':
+              value = container.LastUpdated ? formatDate(container.LastUpdated) : '';
+              break;
+            case 'Notes':
+              value = container.Notes || '';
+              break;
+          }
+          
+          return selectedValues.includes(value);
+        });
+      }
+    });
+    
+    return filtered;
+  }, [columnFilters]);
+
   // Use filtered containers from props if provided, otherwise use all containers
-  const displayedContainers = ensureArray(filteredContainers || containers);
+  const baseContainers = useMemo(() => 
+    ensureArray(filteredContainers || containers), 
+    [filteredContainers, containers]
+  );
+  
+  const displayedContainers = useMemo(() => 
+    applyColumnFilters(baseContainers), 
+    [baseContainers, applyColumnFilters]
+  );
   
 
   // Format dates for display
@@ -465,7 +605,7 @@ export const ContainerTable: React.FC<ContainerTableProps> = ({
     ];
 
     return baseColumns.filter((column) => column.visible !== false);
-  }, [columnVisibility, containers, editingCell, onEdit, onDelete]);
+  }, [columnVisibility, editingCell]);
 
   // @ts-ignore - react-table has incorrect typings that we need to workaround
   const {
@@ -486,7 +626,6 @@ export const ContainerTable: React.FC<ContainerTableProps> = ({
         selectedRowIds: {},
       },
     },
-    useFilters,
     useSortBy,
     useRowSelect,
     (hooks) => {
@@ -515,33 +654,38 @@ export const ContainerTable: React.FC<ContainerTableProps> = ({
   // @ts-ignore - react-table type issues
   const { selectedRowIds } = tableState;
 
-  // Sync selected rows to context
+  // Handle row selection changes - use a ref to avoid infinite loops
+  const lastSelectedRowIds = useRef<Record<string, boolean>>({});
+  
   useEffect(() => {
     if (!selectedRowIds) return;
     
-    const selectedIds = Object.keys(selectedRowIds).map(Number);
-    dispatch({ 
-      type: 'DESELECT_ALL_CONTAINERS' 
-    });
+    // Only update if selection actually changed
+    const currentSelection = JSON.stringify(selectedRowIds);
+    const lastSelection = JSON.stringify(lastSelectedRowIds.current);
     
-    if (selectedIds.length > 0) {
-      const selected = displayedContainers.filter(container => {
-        // Get the row index from selectedRowIds and check if the current container is at that index
-        const rowIndexes = Object.keys(selectedRowIds);
-        return rowIndexes.some(index => {
-          const rowIndex = Number(index);
-          return rowIndex < displayedContainers.length && displayedContainers[rowIndex].ContainerID === container.ContainerID;
-        });
-      });
-      
-      selected.forEach(container => {
-        dispatch({ 
-          type: 'SELECT_CONTAINER', 
-          payload: container 
-        });
-      });
+    if (currentSelection === lastSelection) return;
+    
+    lastSelectedRowIds.current = selectedRowIds;
+    
+    // Only sync if there are actual selections
+    const selectedCount = Object.keys(selectedRowIds).length;
+    if (selectedCount === 0) {
+      dispatch({ type: 'DESELECT_ALL_CONTAINERS' });
+      return;
     }
-  }, [selectedRowIds, displayedContainers, dispatch]);
+    
+    // Get selected containers based on row indices
+    const selected = Object.keys(selectedRowIds)
+      .map(index => displayedContainers[parseInt(index)])
+      .filter(Boolean);
+    
+    // Update context with selected containers
+    dispatch({ type: 'DESELECT_ALL_CONTAINERS' });
+    selected.forEach(container => {
+      dispatch({ type: 'SELECT_CONTAINER', payload: container });
+    });
+  }, [selectedRowIds]);
 
   // Sync the scrollable content width
   useEffect(() => {
@@ -563,12 +707,41 @@ export const ContainerTable: React.FC<ContainerTableProps> = ({
     return () => window.removeEventListener('resize', handleResize);
   }, [displayedContainers, columnVisibility]);
 
+  // Filter handlers - defined before any early returns
+  const handleClearFilter = (columnId: string) => {
+    setColumnFilters(prev => {
+      const newFilters = { ...prev };
+      delete newFilters[columnId];
+      return newFilters;
+    });
+  };
+
+  // Clear all filters
+  const handleClearAllFilters = () => {
+    setColumnFilters({});
+  };
+
   if (loading) {
     return <div className="flex justify-center p-8">Loading containers...</div>;
   }
 
   if (displayedContainers.length === 0) {
-    return <div className="flex justify-center p-8">No containers found.</div>;
+    return (
+      <div>
+        {/* Active filters display */}
+        <ActiveFilters
+          columnFilters={columnFilters}
+          onClearFilter={handleClearFilter}
+          onClearAllFilters={handleClearAllFilters}
+          getColumnDisplayName={getColumnDisplayName}
+        />
+        <div className="flex justify-center p-8">
+          {Object.keys(columnFilters).length > 0 
+            ? "No containers match the current filters." 
+            : "No containers found."}
+        </div>
+      </div>
+    );
   }
 
   // Sync scroll between top and bottom scrollbars
@@ -586,6 +759,14 @@ export const ContainerTable: React.FC<ContainerTableProps> = ({
 
   return (
     <div>
+      {/* Active filters display */}
+      <ActiveFilters
+        columnFilters={columnFilters}
+        onClearFilter={handleClearFilter}
+        onClearAllFilters={handleClearAllFilters}
+        getColumnDisplayName={getColumnDisplayName}
+      />
+      
       {/* Top horizontal scrollbar */}
       <div 
         ref={topScrollRef}
@@ -617,17 +798,87 @@ export const ContainerTable: React.FC<ContainerTableProps> = ({
                   {...column.getHeaderProps(column.getSortByToggleProps())}
                   className="px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
                 >
-                  <div className="flex items-center">
-                    {column.render('Header')}
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center">
+                      {column.render('Header')}
+                      {/* @ts-ignore - react-table type issues */}
+                      {column.isSorted ? (
+                        // @ts-ignore - react-table type issues
+                        column.isSortedDesc ? (
+                          <ChevronDownIcon className="ml-1 w-4 h-4" />
+                        ) : (
+                          <ChevronUpIcon className="ml-1 w-4 h-4" />
+                        )
+                      ) : null}
+                    </div>
                     {/* @ts-ignore - react-table type issues */}
-                    {column.isSorted ? (
-                      // @ts-ignore - react-table type issues
-                      column.isSortedDesc ? (
-                        <ChevronDownIcon className="ml-1 w-4 h-4" />
-                      ) : (
-                        <ChevronUpIcon className="ml-1 w-4 h-4" />
-                      )
-                    ) : null}
+                    {column.id !== 'selection' && column.id !== 'actions' && (
+                      <ColumnFilter
+                        columnId={column.id}
+                        columnValues={baseContainers.map(container => {
+                          // Extract values based on column ID
+                          switch (column.id) {
+                            case 'ContainerNumber':
+                              return container.ContainerNumber || '';
+                            case 'ProjectNumber':
+                              return container.ProjectNumber || '';
+                            case 'CurrentStatus':
+                              return container.CurrentStatus || '';
+                            case 'shiplineName':
+                              return container.Shipline?.ShiplineName || '';
+                            case 'ContainerSize':
+                              return container.ContainerSize || '';
+                            case 'BOLBookingNumber':
+                              return container.BOLBookingNumber || '';
+                            case 'Vendor':
+                              return container.Vendor || '';
+                            case 'PONumber':
+                              return container.PONumber || '';
+                            case 'vesselLineName':
+                              return container.VesselLine?.vesselLineName || '';
+                            case 'vesselName':
+                              return container.Vessel?.vesselName || '';
+                            case 'Voyage':
+                              return container.Voyage || '';
+                            case 'PortOfEntry':
+                              return container.PortOfEntry || '';
+                            case 'terminalName':
+                              return container.Terminal?.terminalName || '';
+                            case 'Rail':
+                              return container.Rail || 'No';
+                            case 'ShiplineID':
+                              return String(container.ShiplineID || '');
+                            case 'Sail':
+                              return container.Sail ? formatDate(container.Sail) : '';
+                            case 'Arrival':
+                              return container.Arrival ? formatDate(container.Arrival) : '';
+                            case 'Available':
+                              return container.Available ? formatDate(container.Available) : '';
+                            case 'PickupLFD':
+                              return container.PickupLFD ? formatDate(container.PickupLFD) : '';
+                            case 'ReturnLFD':
+                              return container.ReturnLFD ? formatDate(container.ReturnLFD) : '';
+                            case 'Delivered':
+                              return container.Delivered ? formatDate(container.Delivered) : '';
+                            case 'Returned':
+                              return container.Returned ? formatDate(container.Returned) : '';
+                            case 'LastUpdated':
+                              return container.LastUpdated ? formatDate(container.LastUpdated) : '';
+                            case 'Notes':
+                              return container.Notes || '';
+                            default:
+                              return '';
+                          }
+                        })}
+                        selectedValues={columnFilters[column.id] || []}
+                        onFilterChange={(columnId, values) => {
+                          setColumnFilters(prev => ({
+                            ...prev,
+                            [columnId]: values
+                          }));
+                        }}
+                      />
+                    )}
                   </div>
                 </th>
               ))}

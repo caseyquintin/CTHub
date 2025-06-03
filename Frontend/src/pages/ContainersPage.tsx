@@ -69,7 +69,7 @@ const ContainersPage: React.FC = () => {
     };
 
     fetchData();
-  }, [dispatch]);
+  }, []); // Remove dispatch dependency to prevent infinite loops
 
   // Load containers based on current view and filtering method
   const loadContainers = async (filters?: AdvancedFilters, page: number = currentPage, statusFilter?: string) => {
