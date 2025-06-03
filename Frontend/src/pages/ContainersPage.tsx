@@ -39,7 +39,7 @@ const ContainersPage: React.FC = () => {
   const [isFilterPresetsOpen, setIsFilterPresetsOpen] = useState(false);
   const [currentContainer, setCurrentContainer] = useState<Container | null>(null);
   const [searchTerm, setSearchTerm] = useState('');
-  const [filterStatus, setFilterStatus] = useState('All');
+  const [filterStatus, setFilterStatus] = useState('Returns'); // Default to Returns Focus tab
   const [advancedFilters, setAdvancedFilters] = useState<AdvancedFilters>(getDefaultFilters());
   
   // Pagination state
@@ -59,7 +59,8 @@ const ContainersPage: React.FC = () => {
         const options = await getDropdownOptions();
         dispatch({ type: 'SET_DROPDOWN_OPTIONS', payload: options });
         
-        await loadContainers();
+        // Load containers with the default filter
+        await loadContainers(undefined, 1, 'Returns');
       } catch (error) {
         console.error('Error loading data:', error);
         toast.error('Failed to load data');
@@ -85,20 +86,11 @@ const ContainersPage: React.FC = () => {
         setTotalCount(response.data.length);
         setTotalPages(1);
       } else {
-        // Use paginated API
-        if (activeStatus === 'All') {
-          const response = await getContainers(page, pageSize);
-          dispatch({ type: 'SET_CONTAINERS', payload: response.data });
-          setTotalCount(response.totalCount);
-          setTotalPages(response.totalPages);
-          setCurrentPage(response.page);
-        } else {
-          // Status filtering - for now, use legacy approach
-          const data = await getContainersByStatus(activeStatus);
-          dispatch({ type: 'SET_CONTAINERS', payload: data });
-          setTotalCount(data.length);
-          setTotalPages(1);
-        }
+        // Always use status-based filtering for the new tab structure
+        const data = await getContainersByStatus(activeStatus);
+        dispatch({ type: 'SET_CONTAINERS', payload: data });
+        setTotalCount(data.length);
+        setTotalPages(1);
       }
     } catch (error) {
       console.error('Error loading containers:', error);
@@ -207,15 +199,14 @@ const ContainersPage: React.FC = () => {
     setIsEditModalOpen(true);
   };
 
-  // Filter statuses for view selection
+  // Filter statuses for view selection with new structure
   const statusFilters = [
-    { id: 'All', label: 'All Containers' },
-    { id: 'Not Sailed', label: 'Not Sailed' },
-    { id: 'On Vessel', label: 'On Vessel' },
-    { id: 'At Port', label: 'At Port' },
-    { id: 'On Rail', label: 'On Rail' },
-    { id: 'Delivered', label: 'Delivered' },
-    { id: 'Returned', label: 'Returned' },
+    { id: 'Returns', label: '1️⃣ Returns Focus', description: 'First thing every morning - check for returns' },
+    { id: 'Active', label: '2️⃣ Active Management', description: 'What needs coordination today' },
+    { id: 'EarlyTransit', label: '3️⃣ Early Transit', description: 'Check for movement updates' },
+    { id: 'Imminent', label: '4️⃣ Imminent Arrivals', description: 'Arriving within 2 days' },
+    { id: 'AllVessels', label: '5️⃣ All Vessels', description: 'General vessel monitoring' },
+    { id: 'Archive', label: '✅ Archive', description: 'Returned containers' },
   ];
 
   // Apply filters to containers
@@ -318,14 +309,15 @@ const ContainersPage: React.FC = () => {
       <div className="bg-white shadow-md rounded-lg p-4 mb-6">
         <div className="flex flex-col lg:flex-row justify-between gap-4">
           {/* Status Filter Tabs */}
-          <div className="flex overflow-x-auto pb-2 lg:pb-0">
+          <div className="flex overflow-x-auto pb-2 lg:pb-0 gap-2">
             {statusFilters.map((status) => (
               <button
                 key={status.id}
                 onClick={() => handleViewChange(status.id)}
-                className={`px-4 py-2 mr-2 rounded-md text-sm font-medium ${
+                title={status.description}
+                className={`px-4 py-2 rounded-md text-sm font-medium whitespace-nowrap transition-colors ${
                   filterStatus === status.id
-                    ? 'bg-indigo-100 text-indigo-800'
+                    ? 'bg-indigo-600 text-white shadow-md'
                     : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
                 }`}
               >

@@ -82,7 +82,7 @@ const initialState: AppState = {
     LastUpdated: false,
     Notes: false,
   },
-  currentView: 'All',
+  currentView: 'Returns',
 };
 
 // Create the reducer function

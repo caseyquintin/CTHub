@@ -160,29 +160,68 @@ namespace ContainerTrackingSystem.API.Controllers
                 
                 switch (status)
                 {
-                    case "Not Sailed":
-                        statusesToMatch.Add("NOT SAILED");
+                    case "Returns":
+                        // Returns Focus: containers needing return management
+                        statusesToMatch.Add("TRANSLOADING");
+                        statusesToMatch.Add("DELIVERED");
+                        statusesToMatch.Add("PU BY VENDOR");
                         break;
-                    case "On Vessel":
-                        statusesToMatch.Add("ON VESSEL");
-                        statusesToMatch.Add("XLOADING AT SEA");
-                        break;
-                    case "At Port":
-                        statusesToMatch.Add("AT PORT");
-                        break;
-                    case "On Rail":
+                    case "Active":
+                        // Active Management: needs coordination today
+                        statusesToMatch.Add("PU APPT REQ");
+                        statusesToMatch.Add("PU APPT SET");
+                        statusesToMatch.Add("DEL APPT REQ");
+                        statusesToMatch.Add("DEL APPT SET");
                         statusesToMatch.Add("ON RAIL");
                         statusesToMatch.Add("XLOADING TO RAIL");
+                        statusesToMatch.Add("AVAILABLE");
+                        // All NOT AVAILABLE statuses
+                        statusesToMatch.Add("NOT AVAILABLE");
+                        statusesToMatch.Add("NA-CUSTOMS EXAM");
+                        statusesToMatch.Add("NA-CUSTOMS HOLD");
+                        statusesToMatch.Add("NA-FREIGHT HOLD");
+                        statusesToMatch.Add("NA-OTHER HOLD");
+                        statusesToMatch.Add("NA-USDA HOLD");
                         break;
-                    case "Delivered":
-                        statusesToMatch.Add("DELIVERED");
+                    case "EarlyTransit":
+                        // Early Transit: check for movement updates
+                        statusesToMatch.Add("NOT SAILED");
+                        statusesToMatch.Add("XLOADING AT SEA");
                         break;
-                    case "Returned":
+                    case "Imminent":
+                        // Imminent Arrivals: ON VESSEL with arrival date filtering
+                        statusesToMatch.Add("ON VESSEL");
+                        break;
+                    case "AllVessels":
+                        // All Vessels: general vessel monitoring
+                        statusesToMatch.Add("ON VESSEL");
+                        break;
+                    case "Archive":
+                        // Archive: returned containers
                         statusesToMatch.Add("RETURNED");
                         break;
                     default:
-                        // If not a special case, try uppercase version
-                        statusesToMatch.Add(status.ToUpper());
+                        // Legacy support for old status values
+                        if (status == "Not Sailed")
+                            statusesToMatch.Add("NOT SAILED");
+                        else if (status == "On Vessel")
+                        {
+                            statusesToMatch.Add("ON VESSEL");
+                            statusesToMatch.Add("XLOADING AT SEA");
+                        }
+                        else if (status == "At Port")
+                            statusesToMatch.Add("AT PORT");
+                        else if (status == "On Rail")
+                        {
+                            statusesToMatch.Add("ON RAIL");
+                            statusesToMatch.Add("XLOADING TO RAIL");
+                        }
+                        else if (status == "Delivered")
+                            statusesToMatch.Add("DELIVERED");
+                        else if (status == "Returned")
+                            statusesToMatch.Add("RETURNED");
+                        else
+                            statusesToMatch.Add(status.ToUpper());
                         break;
                 }
                 
@@ -190,9 +229,67 @@ namespace ContainerTrackingSystem.API.Controllers
                 Console.WriteLine($"[DEBUG] GetContainersByStatus called with status: '{status}'");
                 Console.WriteLine($"[DEBUG] Looking for statuses: {string.Join(", ", statusesToMatch)}");
                 
-                var containers = await _unitOfWork.Containers.Query()
-                    .Where(c => c.CurrentStatus != null && statusesToMatch.Contains(c.CurrentStatus))
+                // Build query with status filtering and includes
+                var query = _unitOfWork.Containers.Query()
                     .Include(c => c.Shipline)
+                    .Include(c => c.Vessel)
+                    .Include(c => c.Terminal)
+                    .Where(c => c.CurrentStatus != null && statusesToMatch.Contains(c.CurrentStatus));
+
+                // Apply date filtering for specific tabs
+                if (status == "Imminent")
+                {
+                    // Imminent Arrivals: ON VESSEL where Arrival ≤ Today + 2 days
+                    var twoDaysFromNow = DateTime.Now.AddDays(2);
+                    query = query.Where(c => c.Arrival <= twoDaysFromNow);
+                }
+                else if (status == "AllVessels")
+                {
+                    // All Vessels: ON VESSEL where Arrival > Today - 2 days (excludes very old arrivals)
+                    var twoDaysAgo = DateTime.Now.AddDays(-2);
+                    query = query.Where(c => c.Arrival > twoDaysAgo);
+                }
+
+                // Apply default sorting based on tab
+                switch (status)
+                {
+                    case "Returns":
+                        // Default Sort: Shipline
+                        query = query.OrderBy(c => c.Shipline != null ? c.Shipline.ShiplineName : "")
+                                    .ThenBy(c => c.ContainerNumber);
+                        break;
+                    case "Active":
+                        // Default Sort: Current Status
+                        query = query.OrderBy(c => c.CurrentStatus).ThenBy(c => c.ContainerNumber);
+                        break;
+                    case "EarlyTransit":
+                        // Default Sort: Vessel, Arrival, Port of Departure
+                        query = query.OrderBy(c => c.Vessel != null ? c.Vessel.VesselName : "")
+                                    .ThenBy(c => c.Arrival)
+                                    .ThenBy(c => c.PortOfDeparture);
+                        break;
+                    case "Imminent":
+                        // Default Sort: Vessel, Terminal, Arrival (desc)
+                        query = query.OrderBy(c => c.Vessel != null ? c.Vessel.VesselName : "")
+                                    .ThenBy(c => c.Terminal != null ? c.Terminal.TerminalName : "")
+                                    .ThenByDescending(c => c.Arrival);
+                        break;
+                    case "AllVessels":
+                        // Default Sort: Vessel, Terminal
+                        query = query.OrderBy(c => c.Vessel != null ? c.Vessel.VesselName : "")
+                                    .ThenBy(c => c.Terminal != null ? c.Terminal.TerminalName : "");
+                        break;
+                    case "Archive":
+                        // Default Sort: Project #
+                        query = query.OrderBy(c => c.ProjectNumber ?? "").ThenBy(c => c.ContainerNumber);
+                        break;
+                    default:
+                        // Default sort by container ID
+                        query = query.OrderBy(c => c.ContainerID);
+                        break;
+                }
+
+                var containers = await query
                     .Select(c => new Container
                     {
                         ContainerID = c.ContainerID,
@@ -216,11 +313,23 @@ namespace ContainerTrackingSystem.API.Controllers
                         PONumber = c.PONumber,
                         VesselLineID = c.VesselLineID,
                         VesselID = c.VesselID,
+                        Vessel = c.Vessel == null ? null : new Vessel
+                        {
+                            VesselID = c.Vessel.VesselID,
+                            VesselName = c.Vessel.VesselName,
+                            VesselLineID = c.Vessel.VesselLineID
+                        },
                         Voyage = c.Voyage,
                         PortOfDeparture = c.PortOfDeparture,
                         PortID = c.PortID,
                         PortOfEntry = c.PortOfEntry,
                         TerminalID = c.TerminalID,
+                        Terminal = c.Terminal == null ? null : new Terminal
+                        {
+                            TerminalID = c.Terminal.TerminalID,
+                            TerminalName = c.Terminal.TerminalName,
+                            PortID = c.Terminal.PortID
+                        },
                         Rail = c.Rail,
                         RailDestination = c.RailDestination,
                         RailwayLine = c.RailwayLine,
