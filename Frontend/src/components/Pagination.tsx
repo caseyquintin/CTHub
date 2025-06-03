@@ -123,7 +123,7 @@ export const Pagination: React.FC<PaginationProps> = ({
                 <option value={200}>200</option>
                 <option value={500}>500</option>
               </select>
-              <ChevronDownIcon className="absolute right-2 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400 pointer-events-none" />
+              <ChevronDownIcon className="absolute right-2 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400 pointer-events-none stroke-2" />
             </div>
             <span className="text-sm text-gray-700">per page</span>
           </div>
@@ -135,7 +135,7 @@ export const Pagination: React.FC<PaginationProps> = ({
               className="relative inline-flex items-center rounded-l-md px-2 py-2 text-gray-400 ring-1 ring-inset ring-gray-300 hover:bg-gray-50 focus:z-20 focus:outline-offset-0 disabled:opacity-50 disabled:cursor-not-allowed"
             >
               <span className="sr-only">Previous</span>
-              <ChevronLeftIcon className="h-5 w-5" aria-hidden="true" />
+              <ChevronLeftIcon className="h-5 w-5 stroke-2" aria-hidden="true" />
             </button>
             
             {visiblePages.map((page, index) => (
@@ -166,7 +166,7 @@ export const Pagination: React.FC<PaginationProps> = ({
               className="relative inline-flex items-center rounded-r-md px-2 py-2 text-gray-400 ring-1 ring-inset ring-gray-300 hover:bg-gray-50 focus:z-20 focus:outline-offset-0 disabled:opacity-50 disabled:cursor-not-allowed"
             >
               <span className="sr-only">Next</span>
-              <ChevronRightIcon className="h-5 w-5" aria-hidden="true" />
+              <ChevronRightIcon className="h-5 w-5 stroke-2" aria-hidden="true" />
             </button>
           </nav>
       </div>

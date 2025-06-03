@@ -3,7 +3,8 @@ import { useTable, useSortBy, useRowSelect, Column, TableState } from 'react-tab
 import { useAppContext } from '../context/AppContext';
 import { Container } from '../types';
 import { format, isValid } from 'date-fns';
-import { ChevronUpIcon, ChevronDownIcon, LinkIcon } from '@heroicons/react/24/solid';
+import { LinkIcon } from '@heroicons/react/24/solid';
+import { ChevronUpIcon, ChevronDownIcon } from '@heroicons/react/24/outline';
 import { InlineEditCell } from './InlineEditCell';
 import { patchContainer } from '../api';
 import { toast } from 'react-toastify';
@@ -808,9 +809,9 @@ export const ContainerTable: React.FC<ContainerTableProps> = ({
                       {column.isSorted && (
                         // @ts-ignore - react-table type issues
                         column.isSortedDesc ? (
-                          <ChevronDownIcon className="w-4 h-4" />
+                          <ChevronDownIcon className="w-5 h-5 stroke-2" />
                         ) : (
-                          <ChevronUpIcon className="w-4 h-4" />
+                          <ChevronUpIcon className="w-5 h-5 stroke-2" />
                         )
                       )}
                       {/* @ts-ignore - react-table type issues */}
