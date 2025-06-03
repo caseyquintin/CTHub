@@ -79,7 +79,7 @@ export const ColumnFilter: React.FC<ColumnFilterProps> = ({
     <div className="relative inline-block" ref={dropdownRef}>
       <button
         onClick={() => setIsOpen(!isOpen)}
-        className={`ml-2 p-1 rounded hover:bg-gray-200 ${hasFilter ? 'text-blue-600 bg-blue-50' : 'text-gray-400'}`}
+        className={`p-1 rounded hover:bg-gray-200 ${hasFilter ? 'text-blue-600 bg-blue-50' : 'text-gray-400'}`}
         aria-label="Filter column"
       >
         <FunnelIcon className="h-4 w-4" />

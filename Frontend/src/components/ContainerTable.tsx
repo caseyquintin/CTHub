@@ -796,89 +796,92 @@ export const ContainerTable: React.FC<ContainerTableProps> = ({
                 <th
                   // @ts-ignore - react-table type issues
                   {...column.getHeaderProps(column.getSortByToggleProps())}
-                  className="px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                  className="px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider min-w-[120px]"
                 >
-                  <div className="flex items-center justify-between">
-                    <div className="flex items-center">
-                      {column.render('Header')}
+                  <div className="flex items-center gap-2 min-w-0">
+                    <div className="flex items-center min-w-0 flex-1">
+                      <span className="truncate">{column.render('Header')}</span>
+                    </div>
+                    <div className="flex items-center gap-1 flex-shrink-0">
+                      {/* Only show sort icon when actually sorted */}
                       {/* @ts-ignore - react-table type issues */}
-                      {column.isSorted ? (
+                      {column.isSorted && (
                         // @ts-ignore - react-table type issues
                         column.isSortedDesc ? (
-                          <ChevronDownIcon className="ml-1 w-4 h-4" />
+                          <ChevronDownIcon className="w-4 h-4" />
                         ) : (
-                          <ChevronUpIcon className="ml-1 w-4 h-4" />
+                          <ChevronUpIcon className="w-4 h-4" />
                         )
-                      ) : null}
+                      )}
+                      {/* @ts-ignore - react-table type issues */}
+                      {column.id !== 'selection' && column.id !== 'actions' && (
+                        <ColumnFilter
+                          columnId={column.id}
+                          columnValues={baseContainers.map(container => {
+                            // Extract values based on column ID
+                            switch (column.id) {
+                              case 'ContainerNumber':
+                                return container.ContainerNumber || '';
+                              case 'ProjectNumber':
+                                return container.ProjectNumber || '';
+                              case 'CurrentStatus':
+                                return container.CurrentStatus || '';
+                              case 'shiplineName':
+                                return container.Shipline?.ShiplineName || '';
+                              case 'ContainerSize':
+                                return container.ContainerSize || '';
+                              case 'BOLBookingNumber':
+                                return container.BOLBookingNumber || '';
+                              case 'Vendor':
+                                return container.Vendor || '';
+                              case 'PONumber':
+                                return container.PONumber || '';
+                              case 'vesselLineName':
+                                return container.VesselLine?.vesselLineName || '';
+                              case 'vesselName':
+                                return container.Vessel?.vesselName || '';
+                              case 'Voyage':
+                                return container.Voyage || '';
+                              case 'PortOfEntry':
+                                return container.PortOfEntry || '';
+                              case 'terminalName':
+                                return container.Terminal?.terminalName || '';
+                              case 'Rail':
+                                return container.Rail || 'No';
+                              case 'ShiplineID':
+                                return String(container.ShiplineID || '');
+                              case 'Sail':
+                                return container.Sail ? formatDate(container.Sail) : '';
+                              case 'Arrival':
+                                return container.Arrival ? formatDate(container.Arrival) : '';
+                              case 'Available':
+                                return container.Available ? formatDate(container.Available) : '';
+                              case 'PickupLFD':
+                                return container.PickupLFD ? formatDate(container.PickupLFD) : '';
+                              case 'ReturnLFD':
+                                return container.ReturnLFD ? formatDate(container.ReturnLFD) : '';
+                              case 'Delivered':
+                                return container.Delivered ? formatDate(container.Delivered) : '';
+                              case 'Returned':
+                                return container.Returned ? formatDate(container.Returned) : '';
+                              case 'LastUpdated':
+                                return container.LastUpdated ? formatDate(container.LastUpdated) : '';
+                              case 'Notes':
+                                return container.Notes || '';
+                              default:
+                                return '';
+                            }
+                          })}
+                          selectedValues={columnFilters[column.id] || []}
+                          onFilterChange={(columnId, values) => {
+                            setColumnFilters(prev => ({
+                              ...prev,
+                              [columnId]: values
+                            }));
+                          }}
+                        />
+                      )}
                     </div>
-                    {/* @ts-ignore - react-table type issues */}
-                    {column.id !== 'selection' && column.id !== 'actions' && (
-                      <ColumnFilter
-                        columnId={column.id}
-                        columnValues={baseContainers.map(container => {
-                          // Extract values based on column ID
-                          switch (column.id) {
-                            case 'ContainerNumber':
-                              return container.ContainerNumber || '';
-                            case 'ProjectNumber':
-                              return container.ProjectNumber || '';
-                            case 'CurrentStatus':
-                              return container.CurrentStatus || '';
-                            case 'shiplineName':
-                              return container.Shipline?.ShiplineName || '';
-                            case 'ContainerSize':
-                              return container.ContainerSize || '';
-                            case 'BOLBookingNumber':
-                              return container.BOLBookingNumber || '';
-                            case 'Vendor':
-                              return container.Vendor || '';
-                            case 'PONumber':
-                              return container.PONumber || '';
-                            case 'vesselLineName':
-                              return container.VesselLine?.vesselLineName || '';
-                            case 'vesselName':
-                              return container.Vessel?.vesselName || '';
-                            case 'Voyage':
-                              return container.Voyage || '';
-                            case 'PortOfEntry':
-                              return container.PortOfEntry || '';
-                            case 'terminalName':
-                              return container.Terminal?.terminalName || '';
-                            case 'Rail':
-                              return container.Rail || 'No';
-                            case 'ShiplineID':
-                              return String(container.ShiplineID || '');
-                            case 'Sail':
-                              return container.Sail ? formatDate(container.Sail) : '';
-                            case 'Arrival':
-                              return container.Arrival ? formatDate(container.Arrival) : '';
-                            case 'Available':
-                              return container.Available ? formatDate(container.Available) : '';
-                            case 'PickupLFD':
-                              return container.PickupLFD ? formatDate(container.PickupLFD) : '';
-                            case 'ReturnLFD':
-                              return container.ReturnLFD ? formatDate(container.ReturnLFD) : '';
-                            case 'Delivered':
-                              return container.Delivered ? formatDate(container.Delivered) : '';
-                            case 'Returned':
-                              return container.Returned ? formatDate(container.Returned) : '';
-                            case 'LastUpdated':
-                              return container.LastUpdated ? formatDate(container.LastUpdated) : '';
-                            case 'Notes':
-                              return container.Notes || '';
-                            default:
-                              return '';
-                          }
-                        })}
-                        selectedValues={columnFilters[column.id] || []}
-                        onFilterChange={(columnId, values) => {
-                          setColumnFilters(prev => ({
-                            ...prev,
-                            [columnId]: values
-                          }));
-                        }}
-                      />
-                    )}
                   </div>
                 </th>
               ))}
