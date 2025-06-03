@@ -70,29 +70,10 @@ export const Pagination: React.FC<PaginationProps> = ({
 
   const visiblePages = getVisiblePages();
 
-  if (totalPages <= 1) {
-    return (
-      <div className="flex items-center justify-between border-t border-gray-200 bg-white px-4 py-3 sm:px-6">
-        <div className="flex flex-1 justify-between sm:hidden">
-          <span className="text-sm text-gray-700">
-            Showing {startItem} to {endItem} of {totalItems} results
-          </span>
-        </div>
-        <div className="hidden sm:flex sm:flex-1 sm:items-center sm:justify-between">
-          <div>
-            <p className="text-sm text-gray-700">
-              Showing <span className="font-medium">{startItem}</span> to{' '}
-              <span className="font-medium">{endItem}</span> of{' '}
-              <span className="font-medium">{totalItems}</span> results
-            </p>
-          </div>
-        </div>
-      </div>
-    );
-  }
+  // Don't return early - show full pagination even for single page
 
   return (
-    <div className="flex items-center justify-between border-t border-gray-200 bg-white px-4 py-3 sm:px-6">
+    <div className="flex items-center justify-between bg-white px-4 py-3 sm:px-6">
       <div className="flex flex-1 justify-between sm:hidden">
         <button
           onClick={() => onPageChange(currentPage - 1)}
@@ -147,8 +128,7 @@ export const Pagination: React.FC<PaginationProps> = ({
             <span className="text-sm text-gray-700">per page</span>
           </div>
         )}
-        <div>
-            <nav className="isolate inline-flex -space-x-px rounded-md shadow-sm" aria-label="Pagination">
+        <nav className="isolate inline-flex -space-x-px rounded-md shadow-sm" aria-label="Pagination">
             <button
               onClick={() => onPageChange(currentPage - 1)}
               disabled={currentPage <= 1 || loading}
@@ -189,7 +169,6 @@ export const Pagination: React.FC<PaginationProps> = ({
               <ChevronRightIcon className="h-5 w-5" aria-hidden="true" />
             </button>
           </nav>
-        </div>
       </div>
     </div>
   );
